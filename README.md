@@ -1,6 +1,6 @@
-# Laravel Base Repositories
+# Laravel Base Exceptions
 
-A set of base repository interfaces and implementations for Laravel applications
+A set of base exceptions for Laravel applications
 
 More information and proper README soon.
 
@@ -10,7 +10,7 @@ Require this package in your `composer.json` file:
 
     {
         "require-dev": {
-            "antarctica/laravel-base-repositories": "dev-develop"
+            "antarctica/laravel-base-exceptions": "dev-develop"
         }
     }
     
