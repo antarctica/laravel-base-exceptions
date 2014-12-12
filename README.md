@@ -81,6 +81,10 @@ class SomeException extends HttpException {
 }
 ```
 
+## Contributing
+
+This project welcomes contributions, see `CONTRIBUTING` for our general policy.
+
 ## Developing
 
 To aid development and keep your local computer clean, a VM (managed by Vagrant) is used to create an isolated environment with all necessary tools/libraries available.
@@ -149,4 +153,8 @@ vagrant destroy
 ```
 
 The `laravel-base-exceptions` directory can then be safely deleted as normal.
+
+## License
+
+Copyright 2014 NERC BAS. Licensed under the MIT license, see `LICENSE` for details.
 
