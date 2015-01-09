@@ -1,8 +1,7 @@
 <?php
 
-namespace Lions\Exception;
+namespace Antarctica\LaravelBaseExceptions\Exception;
 
-use Antarctica\LaravelBaseExceptions\Exception\HttpException;
 use Exception;
 
 class InvalidArgumentTypeException extends HttpException {
