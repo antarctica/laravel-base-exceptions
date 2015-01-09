@@ -81,6 +81,176 @@ class SomeException extends HttpException {
 }
 ```
 
+### `InvalidArgumentTypeException`
+
+Extends this packages's `HttpException` exception.
+
+This exception is designed for use with methods where a value used as as a method argument or parameter is determined not to be of the correct data type.
+
+E.g. An argument must be of a data type *string* but a data type of *array* is given.
+
+Note: This exception does not require you to determine data types, rather you provide an example of valid value and the given value and there respective types will be determined automatically.
+
+Note: If you need an exception for the actual value being invalid use the `InvalidArgumentValueException` exception instead.
+
+Note: If you need an exception for ensuring a value is of a particular _class_ (or its parents) do not use this class alone. This class will only confirm the value is an object, it does check its class as well. See [BASWEB-157](https://jira.ceh.ac.uk/browse/BASWEB-157) for details of which exceptions you can use for this purpose.
+
+This exception also adds a number of custom properties used to make using exceptions for this type of error easier.
+
+#### Properties
+
+Note: the properties used by the `HttpException` are  also supported by this exception but not documented here.
+
+##### `argumentName` (string)
+
+**Note: This property is required as part of the exception constructor**
+
+Used in output messages, the name of whatever argument or parameter in question.
+
+E.g. For a method that requires an argument _position_ to be an integer, the argument name could be `Position`.
+
+Note: This value is used for constructing display messages within the exception only, therefore its value does not need to match the name of the argument. However as users may use the this value (if used as an API method argument for example) then it is strongly advised to ensure this value _does_ match the argument name.
+
+##### `validArgumentValue` (mixed)
+
+**Note: This property is required as part of the exception constructor**
+
+A known good value, which is of the correct data type for the argument.
+
+E.g. For a method that requires an argument _position_ to be an integer, this value could be any integer value such as `3`.
+
+For more complex types such as a method that requires an argument _dataProvider_ to be an object, this value could be any variable that is an object.
+
+##### `givenArgumentType` (mixed)
+
+**Note: This property is required as part of the exception constructor**
+
+The value that was used for the argument. Usually you can simply pass this value through to the exception from the method constructor.
+
+E.g. If the argument is _position_ you can likely use `$position` for this property.
+
+#### Basic usage (Laravel)
+
+```php
+<?php
+
+use Antarctica\LaravelBaseExceptions\Exception\InvalidArgumentTypeException;
+
+/**
+ * Determines if the value for an argument is an integer
+ *
+ * @param string $argument name of the argument
+ * @param mixed $var value given for the argument
+ * @return int
+ * @throws InvalidArgumentTypeException
+ * @throws InvalidArgumentValueException
+ */
+private function validateInt($argument, $var)
+{
+    if (is_numeric($var) === false)
+    {
+        throw new InvalidArgumentTypeException(
+            $argumentName = $argument,
+            $valueOfCorrectArgumentType = 0,
+            $argumentValue = $var
+        );
+    }
+    
+    // ...
+    
+    return $var;
+}
+```
+
+### `InvalidArgumentValueException`
+
+Extends this packages's `HttpException` exception.
+
+This exception is designed for use with methods where a value used as as a method argument or parameter is determined not to be of a correct value.
+
+E.g. An argument must be a in a list of three colours `Red, Green, Blue` and a value of `Yellow` is given.
+
+Note: If you need an exception for the data type of the value being invalid use the `InvalidArgumentTypeException` exception instead.
+
+Note: If you need an exception for ensuring a value is of a particular _class_ (or its parents) do not use this class alone. This class will only confirm the value is an object, it does check its class as well. See [BASWEB-157](https://jira.ceh.ac.uk/browse/BASWEB-157) for details of which exceptions you can use for this purpose.
+
+This exception also adds a number of custom properties used to make using exceptions for this type of error easier.
+
+#### Properties
+
+Note: the properties used by the `HttpException` are  also supported by this exception but not documented here.
+
+##### `argumentName` (string)
+
+**Note: This property is required as part of the exception constructor**
+
+Used in output messages, the name of whatever argument or parameter in question.
+
+E.g. For a method that requires an argument _position_ to be an integer, the argument name could be `Position`.
+
+Note: This value is used for constructing display messages within the exception only, therefore its value does not need to match the name of the argument. However as users may use the this value (if used as an API method argument for example) then it is strongly recommended to ensure this value _does_ match the argument name.
+
+##### `details` (array)
+
+**Note: This property is required as part of the exception constructor**
+
+Human or machine readable reasons why a value is invalid. Structured as an array to cater to different audiences and purposes.
+
+You may wish to provide well structured information for clients to interpret errors and automatically resolve them or show them to users where the service generating this exception is used as a backing service.
+
+You may also wish to display a descriptive message for use in debugging or other human interactions with the service generating this exception.
+
+Note: It is up to you how complex you make these methods:
+ 
+* For simple validation type situations (value is not a list for example) simply stating the value given was not in the list would likely be enough detail.
+* For more complex situations (e.g. a date cannot be used where at least one of seven managers is away and not on a tuesday or when the wind is blowing due East)you may wish to structure errors.
+* You may want to provide dynamic information (e.g. you cannot use a valid over 10 degrees Kelvin higher than the current temperature).
+
+##### `resolution` (string)
+
+**Note: This property is required as part of the exception constructor**
+
+This property is inherited from the `HttpException` but is mandatory for this exception.
+
+A human readable description of how to provide a permitted value. These typically work in tandem with the _details_ parameter.
+
+For example where a method requires an argument to be in a list the _details_ would state that the value given (and display this) is not in the list of valid terms (and list these). The resolution in this case could simply state to retry the previous action using a term from the list of valid terms.
+
+Links to documentation, or other sources/URLs may also be provided through the inherited properties of the `HttpException`, specifically the `resolutionURLs` property.
+
+#### Basic usage (Laravel)
+
+```php
+<?php
+
+use Antarctica\LaravelBaseExceptions\Exception\InvalidArgumentValueException;
+
+/**
+ * Determines if the value for an argument is an integer
+ *
+ * @param string $argument name of the argument
+ * @param mixed $var value given for the argument
+ * @return int
+ * @throws InvalidArgumentTypeException
+ * @throws InvalidArgumentValueException
+ */
+private function validateInt($argument, $var)
+{
+    // ...
+
+    if ($var <= 0)
+    {
+        throw new InvalidArgumentValueException(
+            $argumentName = $argument,
+            $reasons = ['Value must not be equal to or less than 0, ' . $var . ' given.'],
+            $resolution = 'Ensure you are providing a value greater than, and not including 0.'
+       );
+    }
+
+    return $var;
+}
+```
+
 ## Contributing
 
 This project welcomes contributions, see `CONTRIBUTING` for our general policy.
