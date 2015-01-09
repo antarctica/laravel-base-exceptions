@@ -20,6 +20,8 @@ Run `composer update`.
 
 ### `HttpException`
 
+Extends the Symfony [HttpException](http://api.symfony.com/2.3/Symfony/Component/HttpKernel/Exception/HttpException.html).
+
 This exception is designed for use with APIs or other situations where an error occurs during the processing of HTTP requests.
 
 It extends the Symfony [HttpException](http://api.symfony.com/2.3/Symfony/Component/HttpKernel/Exception/HttpException.html) to ensure easy integration/compatibility with the [JSON Exception Formatter](https://github.com/Radweb/JSON-Exception-Formatter) package for Laravel.
